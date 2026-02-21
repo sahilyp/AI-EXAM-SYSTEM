@@ -1,0 +1,113 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    transition: 0.3s;
+}
+
+body.light {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+body.dark {
+    background: #121212;
+    color: white;
+}
+
+.top-bar {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+
+.top-bar button {
+    margin-left: 5px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.container {
+    max-width: 550px;
+    margin: 80px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+}
+
+body.dark .container {
+    background: #1e1e1e;
+}
+
+.design2 {
+    border-left: 8px solid #667eea;
+}
+
+textarea {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+select {
+    flex: 1;
+    padding: 8px;
+}
+
+.main-btn {
+    width: 100%;
+    padding: 12px;
+    background: #667eea;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.loader {
+    margin: 20px auto;
+    width: 45px;
+    height: 45px;
+    border: 6px solid #ddd;
+    border-top: 6px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.hidden {
+    display: none;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+
+.mcq-card {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f3f3f3;
+    border-radius: 8px;
+}
+
+body.dark .mcq-card {
+    background: #2a2a2a;
+}
+
+.option {
+    padding: 10px;
+    background: #e2e2e2;
+    margin: 8px 0;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.correct { background: #b2f5ea; }
+.wrong { background: #feb2b2; }
+
+.explanation {
+    margin-top: 8px;
+    font-size: 14px;
+}

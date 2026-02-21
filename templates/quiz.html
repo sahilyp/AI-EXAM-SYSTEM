@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Quiz | AI Exam System</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    min-height:100vh;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:white;
+    font-family:"Segoe UI",Arial;
+}
+
+/* glass card */
+.glass-card{
+    background:rgba(255,255,255,0.12);
+    backdrop-filter:blur(16px);
+    border-radius:22px;
+    padding:28px;
+    margin-bottom:22px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.35);
+    animation:fade .35s ease;
+}
+
+@keyframes fade{
+    from{opacity:0; transform:translateY(8px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+.answer{display:none;font-weight:bold;margin-top:8px}
+.correct{color:#43e97b}
+.wrong{color:#ff6b6b}
+</style>
+</head>
+
+<body>
+
+<div class="container py-4" style="max-width:900px">
+
+<!-- TIMER -->
+<div class="glass-card">
+    <h5>⏱ Time Left: <span id="timer">00:00</span></h5>
+    <div class="progress">
+        <div class="progress-bar bg-success" id="progressBar"></div>
+    </div>
+</div>
+
+<form id="quizForm">
+
+{% for q in questions %}
+{% set i = loop.index0 %}
+
+<div class="glass-card question-card">
+
+<h6 class="mb-3">Q{{ loop.index }}. {{ q.question }}</h6>
+
+{% if q.type == "mcq" %}
+    {% for opt in q.options %}
+    <div class="form-check mb-2">
+        <input class="form-check-input" type="radio" name="q{{ i }}" value="{{ loop.index0 }}">
+        <label class="form-check-label">{{ opt }}</label>
+    </div>
+    {% endfor %}
+    <div class="answer">✔ Correct: {{ q.options[q.correct] }}</div>
+
+{% elif q.type == "fill" %}
+    <input class="form-control mt-2" name="q{{ i }}" placeholder="Type answer">
+    <div class="answer">✔ Correct: {{ q.answer }}</div>
+
+{% else %}
+    <textarea class="form-control mt-2" rows="3" name="q{{ i }}" placeholder="Write answer"></textarea>
+    <div class="answer">✔ Expected: {{ q.answer }}</div>
+{% endif %}
+
+</div>
+{% endfor %}
+
+<button type="button" class="btn btn-success w-100" onclick="submitQuiz()">Submit Exam</button>
+</form>
+
+<h4 id="result" class="text-center mt-3"></h4>
+
+</div>
+
+<script>
+let totalTime={{ total_time }};
+const questions={{ questions|tojson }};
+const timer=document.getElementById("timer");
+const bar=document.getElementById("progressBar");
+
+/* ================= TIMER ================= */
+const interval=setInterval(()=>{
+    let m=Math.floor(totalTime/60);
+    let s=totalTime%60;
+    timer.innerText=`${m}:${s<10?"0":""}${s}`;
+    bar.style.width=(totalTime/{{ total_time }}*100)+"%";
+
+    if(totalTime<=0){
+        clearInterval(interval);
+        submitQuiz();
+    }
+    totalTime--;
+},1000);
+
+/* ================= SUBMIT ================= */
+async function submitQuiz(){
+clearInterval(interval);
+
+let score=0;
+let details=[];
+const cards=document.querySelectorAll(".question-card");
+
+cards.forEach((card,i)=>{
+let q=questions[i];
+let ansBox=card.querySelector(".answer");
+ansBox.style.display="block";
+
+let user="Not Answered";
+let correct="";
+
+if(q.type==="mcq"){
+let sel=card.querySelector(`input[name="q${i}"]:checked`);
+correct=q.options[q.correct];
+
+if(sel){
+user=q.options[Number(sel.value)];
+if(Number(sel.value)===q.correct){
+score++; ansBox.classList.add("correct");
+}else ansBox.classList.add("wrong");
+}else ansBox.classList.add("wrong");
+}
+else{
+let input=card.querySelector(`[name="q${i}"]`);
+user=input.value||"Not Answered";
+correct=q.answer;
+
+if(user.trim().toLowerCase()===correct.toLowerCase()){
+score++; ansBox.classList.add("correct");
+}else ansBox.classList.add("wrong");
+}
+
+details.push({question:q.question,user:user,correct:correct});
+});
+
+let percent=Math.round(score/questions.length*100);
+let grade=percent>=80?"A":percent>=60?"B":percent>=40?"C":"D";
+
+document.getElementById("result").innerText=
+`🎯 Score ${score}/${questions.length} | ${percent}% | Grade ${grade}`;
+
+await fetch("/save_result",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+score:score,
+total:questions.length,
+grade:grade,
+difficulty:"{{ difficulty }}",
+questions:details
+})
+});
+
+/* optional redirect */
+setTimeout(()=>window.location="/dashboard",2500);
+}
+</script>
+
+</body>
+</html>

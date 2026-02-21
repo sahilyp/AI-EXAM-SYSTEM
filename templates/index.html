@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Start Exam</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Glass Card */
+.glass-card {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(16px);
+    border-radius: 22px;
+    padding: 40px;
+    width: 100%;
+    max-width: 650px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.35);
+}
+
+.loader {
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="glass-card">
+
+<h3 class="text-center mb-4">📝 Start New Exam</h3>
+
+<form method="POST" action="/test" enctype="multipart/form-data" onsubmit="startExam()">
+
+<!-- FILE UPLOAD -->
+<label class="form-label">Upload PDF / TXT</label>
+<input type="file" class="form-control mb-3" name="files[]" multiple required>
+
+<!-- NUMBER OF QUESTIONS -->
+<label class="form-label">Number of Questions</label>
+<select class="form-select mb-3" name="num_questions">
+    <option value="10">10</option>
+    <option value="20">20</option>
+    <option value="50">50</option>
+    <option value="100">100</option>
+</select>
+
+<!-- DIFFICULTY -->
+<label class="form-label">Difficulty</label>
+<select class="form-select mb-3" name="difficulty">
+    <option value="easy">Easy (1 min / question)</option>
+    <option value="medium">Medium (2 min / question)</option>
+    <option value="hard">Hard (3 min / question)</option>
+</select>
+
+<!-- QUESTION TYPE -->
+<label class="form-label">Question Type</label>
+<select class="form-select mb-4" name="question_type">
+    <option value="mcq">MCQ</option>
+    <option value="fill">Fill in the Blank</option>
+    <option value="qa">Question & Answer</option>
+</select>
+
+<button id="startBtn" class="btn btn-primary btn-lg w-100">
+    🚀 Start Exam
+</button>
+
+<!-- LOADER -->
+<div class="loader text-center mt-4" id="loader">
+    <div class="spinner-border text-light"></div>
+    <p class="mt-2">Generating questions… Please wait</p>
+</div>
+
+</form>
+
+</div>
+
+<script>
+function startExam() {
+    document.getElementById("startBtn").disabled = true;
+    document.getElementById("loader").style.display = "block";
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Test History</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: white;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.glass-card {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(14px);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 25px 40px rgba(0,0,0,0.35);
+}
+
+.table {
+    background: white;
+    color: black;
+    border-radius: 12px;
+    overflow: hidden;
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark px-4" style="background:rgba(0,0,0,0.6)">
+    <span class="navbar-brand fw-bold">📂 Test History</span>
+    <a href="/dashboard" class="btn btn-outline-light btn-sm">← Dashboard</a>
+</nav>
+
+<div class="container mt-5">
+<div class="glass-card">
+
+<h4 class="mb-4">Your Exam Attempts</h4>
+
+<div class="table-responsive">
+<table class="table table-bordered table-hover align-middle">
+
+<thead class="table-dark">
+<tr>
+    <th>Date & Time</th>
+    <th>Score</th>
+    <th>Grade</th>
+    <th>Difficulty</th>
+    <th>PDF Report</th>
+</tr>
+</thead>
+
+<tbody>
+{% for t in tests %}
+<tr>
+    <td>{{ t.created_at }}</td>
+    <td>{{ t.score }} / {{ t.total }}</td>
+    <td><span class="badge bg-success">{{ t.grade }}</span></td>
+    <td>{{ t.difficulty }}</td>
+    <td>
+        <a href="{{ t.pdf_url }}" class="btn btn-sm btn-primary" download>
+    Download
+</a>
+    </td>
+</tr>
+{% else %}
+<tr>
+    <td colspan="5" class="text-center text-muted">
+        No tests taken yet
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
+</div>
+
+</div>
+</div>
+
+</body>
+</html>

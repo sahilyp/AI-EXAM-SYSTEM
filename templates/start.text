@@ -1,0 +1,3 @@
+cd "D:\mini project\Question-MCQS-Generator-Using-Machine-learning-NLP-main\Question-MCQS-Generator-Using-Machine-learning-NLP-main"
+.\.venv\Scripts\activate
+python app.py
